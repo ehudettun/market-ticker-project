@@ -1,5 +1,6 @@
 com/example/marketticker/SearchPairController.class
 com/example/marketticker/SearchPairRepository.class
+com/example/marketticker/MarketTickerApplication$1.class
 com/example/marketticker/SearchPair.class
 com/example/marketticker/MarketDataService.class
 com/example/marketticker/MarketTickerApplication.class
