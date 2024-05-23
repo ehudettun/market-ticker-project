@@ -27,6 +27,8 @@ jobs:
     - name: Build backend with Maven
       run: mvn clean install
       working-directory: ./backend/market-ticker/
+      env: 
+        POLYGON_KEY: ${{ secrets.POLYGON_KEY }}
 
     - name: Build frontend with Angular
       run: |
