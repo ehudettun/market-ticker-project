@@ -37,7 +37,7 @@ jobs:
     - name: Copy frontend to backend static resources
       run: |
         mkdir -p ./backend/market-ticker/src/main/resources/static
-        cp -r ./frontend/market-ticker-app/dist/market-ticker-app/browser/ ./backend/market-ticker/src/main/resources/static/
+        cp -r ./frontend/market-ticker-app/dist/market-ticker-app/browser/* ./backend/market-ticker/src/main/resources/static/
       shell: bash
 
     - name: Package backend
