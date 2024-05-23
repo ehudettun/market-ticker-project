@@ -45,6 +45,8 @@ jobs:
     - name: Package backend
       run: mvn clean package
       working-directory: ./backend/market-ticker/
+      env:
+        POLYGON_KEY: ${{ secrets.POLYGON_KEY }}  
 
     - name: Upload to S3
       run: aws s3 cp ./backend/market-ticker/target/*.jar s3://$S3_BUCKET/
