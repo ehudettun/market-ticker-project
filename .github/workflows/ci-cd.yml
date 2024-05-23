@@ -68,3 +68,4 @@ jobs:
         EB_APPLICATION: ${{ secrets.EB_APPLICATION }}
         EB_ENVIRONMENT: ${{ secrets.EB_ENVIRONMENT }}
         S3_BUCKET: ${{ secrets.S3_BUCKET }}
+        POLYGON_KEY: ${{ secrets.POLYGON_KEY }}
