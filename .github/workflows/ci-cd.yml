@@ -36,8 +36,8 @@ jobs:
 
     - name: Copy frontend to backend static resources
       run: |
-        mkdir -p ./backend/src/main/resources/static
-        cp -r ./frontend/market-ticker-app/dist/* ./backend/src/main/resources/static/
+        mkdir -p ./backend/market-ticker/src/main/resources/static
+        cp -r ./frontend/market-ticker-app/dist/* ./backend/market-ticker/src/main/resources/static/
       shell: bash
 
     - name: Package backend
@@ -54,9 +54,10 @@ jobs:
 
     - name: Deploy to Elastic Beanstalk
       run: |
-        TIMESTAMP=$(date  +%Y%m%d%H%M%S)
+        TIMESTAMP=$(date +%Y%m%d%H%M%S)
+        JAR_FILE=$(ls backend/market-ticker/target | grep .jar | head -n 1)
         VERSION_LABEL="${GITHUB_SHA}-${TIMESTAMP}"
-        aws elasticbeanstalk create-application-version --application-name $EB_APPLICATION --version-label $VERSION_LABEL --source-bundle S3Bucket=$S3_BUCKET,S3Key=$(ls backend/market-ticker/target | grep .jar | head -n 1)
+        aws elasticbeanstalk create-application-version --application-name $EB_APPLICATION --version-label $VERSION_LABEL --source-bundle S3Bucket=$S3_BUCKET,S3Key=$JAR_FILE
         aws elasticbeanstalk update-environment --environment-name $EB_ENVIRONMENT --version-label $VERSION_LABEL
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
