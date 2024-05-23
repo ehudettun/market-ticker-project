@@ -1,0 +1,16 @@
+<div>
+    <input [(ngModel)]="ticker1" placeholder="Ticker 1" />
+    <input [(ngModel)]="ticker2" placeholder="Ticker 2" />
+    <input [(ngModel)]="startDate" placeholder="Start Date" type="date" />
+    <input [(ngModel)]="endDate" placeholder="End Date" type="date" />
+    <button (click)="searchPair()">Search Pair</button>
+  </div>
+  
+  <div style="display: block;">
+    <canvas baseChart
+          [data]="lineChartData"
+          [options]="lineChartOptions"
+          [type]="'line'">
+  </canvas>
+  </div>
+  
