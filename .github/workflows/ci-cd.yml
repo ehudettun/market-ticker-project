@@ -32,7 +32,7 @@ jobs:
       run: |
         npm install
         npm run build --prod
-      working-directory: ./frontend
+      working-directory: ./frontend/market-ticker-app/
 
     - name: Copy frontend to backend static resources
       run: |
