@@ -22,11 +22,11 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '16'
+        node-version: '20'
 
     - name: Build backend with Maven
       run: mvn clean install
-      working-directory: ./backend
+      working-directory: ./backend/market-ticker/
 
     - name: Build frontend with Angular
       run: |
