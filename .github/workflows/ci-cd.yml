@@ -54,7 +54,7 @@ jobs:
 
     - name: Deploy to Elastic Beanstalk
       run: |
-        aws elasticbeanstalk create-application-version --application-name $EB_APPLICATION --version-label $GITHUB_SHA --source-bundle S3Bucket=$S3_BUCKET,S3Key=$(ls backend/target | grep .jar | head -n 1)
+        aws elasticbeanstalk create-application-version --application-name $EB_APPLICATION --version-label $GITHUB_SHA --source-bundle S3Bucket=$S3_BUCKET,S3Key=$(ls backend/market-ticker/target | grep .jar | head -n 1)
         aws elasticbeanstalk update-environment --environment-name $EB_ENVIRONMENT --version-label $GITHUB_SHA
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
