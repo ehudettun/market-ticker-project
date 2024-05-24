@@ -84,6 +84,11 @@ export class SearchPairsComponent {
       return;
     }
 
+    if (new Date(this.startDate) > new Date(this.endDate)) {
+      this.errorMessage = 'Start date must be before end date.';
+      return;
+    }
+
     if (!this.ticker1Valid || !this.ticker2Valid) {
       this.errorMessage = 'One or both tickers are invalid.';
       return;
