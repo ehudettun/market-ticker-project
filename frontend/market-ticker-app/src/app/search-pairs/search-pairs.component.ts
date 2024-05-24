@@ -79,6 +79,9 @@ export class SearchPairsComponent implements AfterViewInit {
   }
 
   validateTicker(ticker: string, field: 'ticker1Valid' | 'ticker2Valid') {
+     // Capitalize tickers before submitting
+     this.ticker1 = this.ticker1.toUpperCase();
+     this.ticker2 = this.ticker2.toUpperCase();
     this.marketDataService.validateTicker(ticker).subscribe({
       next: isValid => {
         this[field] = isValid;
@@ -104,6 +107,7 @@ export class SearchPairsComponent implements AfterViewInit {
   }
 
   searchPair() {
+    
     if (!this.ticker1 || !this.ticker2 || !this.startDate || !this.endDate) {
       this.errorMessage = 'All fields are required!';
       return;
