@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { MarketDataService } from '../market-data.service';
 import { Chart, ChartOptions, ChartType, ChartData, registerables } from 'chart.js';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { BaseChartDirective } from 'ng2-charts';
   templateUrl: './search-pairs.component.html',
   styleUrls: ['./search-pairs.component.css']
 })
-export class SearchPairsComponent {
+export class SearchPairsComponent implements AfterViewInit {
   ticker1!: string;
   ticker2!: string;
   startDate!: string;
@@ -24,6 +24,9 @@ export class SearchPairsComponent {
   ticker1Valid: boolean = true;
   ticker2Valid: boolean = true;
   suggestedTickers: string[] = [];
+  roiTicker1!: number;
+  roiTicker2!: number;
+  roiDifference!: number;
 
   @ViewChild(BaseChartDirective) chart!: BaseChartDirective;
 
@@ -46,11 +49,33 @@ export class SearchPairsComponent {
   };
   public lineChartOptions: ChartOptions<'line'> = {
     responsive: true,
+    scales: {
+      y: {
+        title: {
+          display: true,
+          text: 'Percentage (%)'
+        },
+        ticks: {
+          callback: function(value) {
+            return value + '%';
+          }
+        }
+      }
+    }
   };
   public lineChartType: ChartType = 'line';
 
   constructor(private marketDataService: MarketDataService) {
     Chart.register(...registerables);
+  }
+
+  ngAfterViewInit() {
+    // Ensure the chart is available after the view has been initialized
+    if (this.chart && this.chart.chart) {
+      this.chart.chart.update();
+    } else {
+      console.error('Chart reference is not available.');
+    }
   }
 
   validateTicker(ticker: string, field: 'ticker1Valid' | 'ticker2Valid') {
@@ -84,13 +109,19 @@ export class SearchPairsComponent {
       return;
     }
 
-    if (new Date(this.startDate) > new Date(this.endDate)) {
-      this.errorMessage = 'Start date must be before end date.';
+    if (!this.ticker1Valid || !this.ticker2Valid) {
+      this.errorMessage = 'One or both tickers are invalid.';
       return;
     }
 
-    if (!this.ticker1Valid || !this.ticker2Valid) {
-      this.errorMessage = 'One or both tickers are invalid.';
+    const currentDate = new Date();
+    if (new Date(this.startDate) > currentDate || new Date(this.endDate) > currentDate) {
+      this.errorMessage = 'Dates must not be in the future.';
+      return;
+    }
+
+    if (new Date(this.startDate) > new Date(this.endDate)) {
+      this.errorMessage = 'Start date must be before end date.';
       return;
     }
 
@@ -127,6 +158,14 @@ export class SearchPairsComponent {
     this.lineChartData.labels = dates1.length > dates2.length ? dates1 : dates2;
     this.lineChartData.datasets[0].data = normalizedPrices1;
     this.lineChartData.datasets[1].data = normalizedPrices2;
+
+       // Calculate ROI
+    this.roiTicker1 = normalizedPrices1[normalizedPrices1.length - 1] - 100;
+    this.roiTicker2 = normalizedPrices2[normalizedPrices2.length - 1] - 100;
+    this.roiDifference = this.roiTicker1 - this.roiTicker2;
+
+    // Clear Suggested Ticker
+    this.suggestedTickers = [];
 
     if (this.chart && this.chart.chart) {
       this.chart.chart.update();

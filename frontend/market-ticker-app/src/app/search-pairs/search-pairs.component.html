@@ -1,3 +1,10 @@
+
+<div class="container mt-5">
+  <!-- Title and Description -->
+  <div class="text-center mb-5">
+    <h1>Ticker Comparison App</h1>
+    <p class="lead">Compare market data for two tickers over a range of dates.</p>
+  </div>
 <div class="container mt-5">
   <div class="mb-4">
     <input [(ngModel)]="ticker1" class="form-control" placeholder="Ticker 1" (blur)="validateTicker(ticker1, 'ticker1Valid')" />
@@ -8,9 +15,11 @@
     <div *ngIf="!ticker2Valid" class="text-danger mt-1">Invalid Ticker 2</div>
   </div>
   <div class="mb-4">
+    <label for="startDate">Start Date</label>
     <input [(ngModel)]="startDate" class="form-control" placeholder="Start Date" type="date" />
   </div>
   <div class="mb-4">
+    <label for="startDate">End Date</label>
     <input [(ngModel)]="endDate" class="form-control" placeholder="End Date" type="date" />
   </div>
   <button (click)="searchPair()" class="btn btn-primary" [disabled]="loading || !ticker1Valid || !ticker2Valid">Search Pair</button>
@@ -35,5 +44,12 @@
     <ul class="list-group">
       <li *ngFor="let ticker of suggestedTickers" class="list-group-item">{{ ticker }}</li>
     </ul>
+  </div>
+   <!-- ROI Summary -->
+   <div *ngIf="!loading && lineChartData.labels && lineChartData.labels.length > 0" class="mt-4">
+    <h3>ROI Summary</h3>
+    <p>Ticker 1 ({{ ticker1 }}): {{ roiTicker1.toFixed(2) }}%</p>
+    <p>Ticker 2 ({{ ticker2 }}): {{ roiTicker2.toFixed(2) }}%</p>
+    <p>Difference: {{ roiDifference.toFixed(2) }}%</p>
   </div>
 </div>
