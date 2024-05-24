@@ -133,6 +133,10 @@ export class SearchPairsComponent implements AfterViewInit {
       return;
     }
 
+    // Capitalize tickers before submitting
+    this.ticker1 = this.ticker1.toUpperCase();
+    this.ticker2 = this.ticker2.toUpperCase();
+
     this.loading = true;
     this.errorMessage = '';
 
