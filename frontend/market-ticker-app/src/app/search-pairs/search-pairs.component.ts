@@ -115,8 +115,16 @@ export class SearchPairsComponent implements AfterViewInit {
     }
 
     const currentDate = new Date();
+    const twoYearsAgo = new Date();
+    twoYearsAgo.setFullYear(currentDate.getFullYear() - 2);
+
     if (new Date(this.startDate) > currentDate || new Date(this.endDate) > currentDate) {
       this.errorMessage = 'Dates must not be in the future.';
+      return;
+    }
+
+    if (new Date(this.startDate) < twoYearsAgo || new Date(this.endDate) < twoYearsAgo) {
+      this.errorMessage = 'You can only go back two years.';
       return;
     }
 
