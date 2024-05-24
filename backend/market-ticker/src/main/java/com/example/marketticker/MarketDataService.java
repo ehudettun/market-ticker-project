@@ -33,8 +33,9 @@ public class MarketDataService {
             null,
             new ParameterizedTypeReference<Map<String, Object>>() {}
         );
-
+        
         return response.getBody();
+        
 }
 public Map<String, Map<String, Object>> getMarketDataForPair(String ticker1, String ticker2, LocalDate startDate, LocalDate endDate) {
     Map<String, Map<String, Object>> result = new HashMap<>();

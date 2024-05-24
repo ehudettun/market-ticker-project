@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import { environment } from '../environments/environment';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class MarketDataService {
-  private apiUrl = 'http://localhost:8080/api/search-pairs';
+  private baseUrl = environment.apiBaseUrl;
+  private apiUrl = `${this.baseUrl}/api/search-pairs`;
 
   constructor(private http: HttpClient) { }
 
