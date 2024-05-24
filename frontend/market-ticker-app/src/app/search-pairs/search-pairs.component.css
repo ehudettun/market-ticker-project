@@ -1,0 +1,13 @@
+.container {
+    max-width: 800px;
+  }
+  
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  canvas {
+    max-width: 100%;
+  }
+  

@@ -1,5 +1,6 @@
 package com.example.marketticker;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,9 @@ public class MarketDataService {
 
     @Value("${polygon.api.key}")
     private String apiKey;
+
+    @Autowired
+    private SearchPairService searchPairService;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -38,6 +42,7 @@ public class MarketDataService {
         
 }
 public Map<String, Map<String, Object>> getMarketDataForPair(String ticker1, String ticker2, LocalDate startDate, LocalDate endDate) {
+    searchPairService.searchPair(ticker1, ticker2); 
     Map<String, Map<String, Object>> result = new HashMap<>();
 
     Map<String, Object> data1 = getMarketData(ticker1, startDate, endDate);
@@ -47,5 +52,23 @@ public Map<String, Map<String, Object>> getMarketDataForPair(String ticker1, Str
     result.put(ticker2, data2);
 
     return result;
+}
+public boolean validateTicker(String ticker) {
+    String url = "https://api.polygon.io/v3/reference/tickers/" + ticker + "?apiKey=" + apiKey;
+    
+    try {
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+            url,
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<Map<String, Object>>() {}
+        );
+        // Check if the API response indicates that the ticker is valid
+        Map<String, Object> responseBody = response.getBody();
+        return responseBody != null && responseBody.containsKey("results");
+    } catch (Exception e) {
+        // Handle exceptions (e.g., ticker not found or API errors)
+        return false;
+    }
 }
 }

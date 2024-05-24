@@ -3,8 +3,8 @@ package com.example.marketticker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.time.LocalDate;
 
 @RestController
@@ -27,10 +27,16 @@ public class SearchPairController {
         return searchPairService.createPair(searchPair);
     }
 
+    @GetMapping("/validate/{ticker}")
+    public boolean validateTicker(@PathVariable String ticker) {
+        return marketDataService.validateTicker(ticker);
+    }
+
     @GetMapping("/search")
     public SearchPair searchPair(@RequestParam String ticker1, @RequestParam String ticker2) {
         return searchPairService.searchPair(ticker1, ticker2);
     }
+
     @GetMapping("/market-data")
     public Map<String, Map<String, Object>> getMarketData(@RequestParam String ticker1,
                                              @RequestParam String ticker2,
@@ -39,5 +45,10 @@ public class SearchPairController {
         LocalDate start = LocalDate.parse(startDate);
         LocalDate end = LocalDate.parse(endDate);
         return marketDataService.getMarketDataForPair(ticker1, ticker2, start, end);
-        }     
+    }
+
+    @GetMapping("/suggested")
+    public List<String> getSuggestedTickers(@RequestParam String ticker) {
+        return searchPairService.getSuggestedTickers(ticker);
+    }
 }
