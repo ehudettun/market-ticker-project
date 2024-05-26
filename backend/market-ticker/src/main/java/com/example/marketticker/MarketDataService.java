@@ -42,11 +42,16 @@ public class MarketDataService {
         
 }
 public Map<String, Map<String, Object>> getMarketDataForPair(String ticker1, String ticker2, LocalDate startDate, LocalDate endDate) {
-    searchPairService.searchPair(ticker1, ticker2); 
     Map<String, Map<String, Object>> result = new HashMap<>();
 
     Map<String, Object> data1 = getMarketData(ticker1, startDate, endDate);
+    Map<String, Object> dividends1 = getDividendData(ticker1, startDate, endDate);
+
     Map<String, Object> data2 = getMarketData(ticker2, startDate, endDate);
+    Map<String, Object> dividends2 = getDividendData(ticker2, startDate, endDate);
+
+    data1.put("dividends", dividends1.get("results"));
+    data2.put("dividends", dividends2.get("results"));
 
     result.put(ticker1, data1);
     result.put(ticker2, data2);
@@ -71,4 +76,21 @@ public boolean validateTicker(String ticker) {
         return false;
     }
 }
+public Map<String, Object> getDividendData(String ticker, LocalDate startDate, LocalDate endDate) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String formattedStartDate = startDate.format(formatter);
+    String formattedEndDate = endDate.format(formatter);
+
+    String url = "https://api.polygon.io/v3/reference/dividends/?ticker=" + ticker + "&pay_date.gte=" + formattedStartDate + "&pay_date.lte=" + formattedEndDate + "&apiKey=" + apiKey;
+    System.out.println(url);
+    ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+        url,
+        HttpMethod.GET,
+        null,
+        new ParameterizedTypeReference<Map<String, Object>>() {}
+    );
+    
+    return response.getBody();
+}
+
 }
