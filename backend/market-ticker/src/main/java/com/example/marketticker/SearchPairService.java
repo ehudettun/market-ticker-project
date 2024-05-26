@@ -35,6 +35,7 @@ public class SearchPairService {
             pair.setTicker1(ticker1);
             pair.setTicker2(ticker2);
             pair.setSearchCount(0); // Initialize the search count
+            System.out.println("Search Count Initialized");
         }
 
         pair.incrementSearchCount();

@@ -32,11 +32,6 @@ public class SearchPairController {
         return marketDataService.validateTicker(ticker);
     }
 
-    @GetMapping("/search")
-    public SearchPair searchPair(@RequestParam String ticker1, @RequestParam String ticker2) {
-        return searchPairService.searchPair(ticker1, ticker2);
-    }
-
     @GetMapping("/market-data")
     public Map<String, Map<String, Object>> getMarketData(@RequestParam String ticker1,
                                              @RequestParam String ticker2,
@@ -44,6 +39,7 @@ public class SearchPairController {
                                              @RequestParam String endDate) {
         LocalDate start = LocalDate.parse(startDate);
         LocalDate end = LocalDate.parse(endDate);
+        searchPairService.searchPair(ticker1, ticker2);
         return marketDataService.getMarketDataForPair(ticker1, ticker2, start, end);
     }
 

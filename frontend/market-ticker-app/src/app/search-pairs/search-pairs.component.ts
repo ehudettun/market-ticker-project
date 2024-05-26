@@ -83,9 +83,19 @@ export class SearchPairsComponent implements AfterViewInit {
   }
 
   validateTicker(ticker: string, field: 'ticker1Valid' | 'ticker2Valid') {
-     // Capitalize tickers before submitting
-     this.ticker1 = this.ticker1.toUpperCase();
-     this.ticker2 = this.ticker2.toUpperCase();
+    if (!ticker) {
+      this[field] = false;
+      return;
+    }
+  
+    // Capitalize tickers before submitting
+    ticker = ticker.toUpperCase();
+    if (field === 'ticker1Valid') {
+      this.ticker1 = ticker;
+    } else {
+      this.ticker2 = ticker;
+    }
+  
     this.marketDataService.validateTicker(ticker).subscribe({
       next: isValid => {
         this[field] = isValid;
