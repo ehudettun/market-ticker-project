@@ -81,7 +81,7 @@ public Map<String, Object> getDividendData(String ticker, LocalDate startDate, L
     String formattedStartDate = startDate.format(formatter);
     String formattedEndDate = endDate.format(formatter);
 
-    String url = "https://api.polygon.io/v3/reference/dividends/?ticker=" + ticker + "&pay_date.gte=" + formattedStartDate + "&pay_date.lte=" + formattedEndDate + "&apiKey=" + apiKey;
+    String url = "https://api.polygon.io/v3/reference/dividends/?ticker=" + ticker + "&ex_dividend_date.gte=" + formattedStartDate + "&ex_dividend_date.lte=" + formattedEndDate + "&apiKey=" + apiKey;
     System.out.println(url);
     ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
         url,

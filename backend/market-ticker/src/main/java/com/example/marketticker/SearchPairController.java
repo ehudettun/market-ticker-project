@@ -22,11 +22,6 @@ public class SearchPairController {
         return searchPairService.getAllPairs();
     }
 
-    @PostMapping
-    public SearchPair createPair(@RequestBody SearchPair searchPair) {
-        return searchPairService.createPair(searchPair);
-    }
-
     @GetMapping("/validate/{ticker}")
     public boolean validateTicker(@PathVariable String ticker) {
         return marketDataService.validateTicker(ticker);

@@ -173,56 +173,51 @@ export class SearchPairsComponent implements AfterViewInit {
   }
 
   updateChart() {
-
-  //  console.log('FIRED!')
     if (!this.marketData1 || !this.marketData2) {
       return;
     }
   
-    const dates1 = this.marketData1.results.map((result: any) => new Date(result.t).toLocaleDateString());
-    let prices1 = this.marketData1.results.map((result: any) => result.c);
-    const dividends1 = this.marketData1.dividends || [];
+    const dates1: string[] = this.marketData1.results.map((result: any) => new Date(result.t).toLocaleDateString());
+    let prices1: number[] = this.marketData1.results.map((result: any) => result.c);
+    const dividends1: any[] = this.marketData1.dividends || [];
   
-    const dates2 = this.marketData2.results.map((result: any) => new Date(result.t).toLocaleDateString());
-    let prices2 = this.marketData2.results.map((result: any) => result.c);
-    const dividends2 = this.marketData2.dividends || [];
+    const dates2: string[] = this.marketData2.results.map((result: any) => new Date(result.t).toLocaleDateString());
+    let prices2: number[] = this.marketData2.results.map((result: any) => result.c);
+    const dividends2: any[] = this.marketData2.dividends || [];
   
-    //This is a failed attempt to present the dividend in the graph
-    // if (this.includeDividends) {
-    //   dividends1.forEach((dividend: any) => {
-    //     const dateIndex = dates1.indexOf(new Date(dividend.pay_date).toLocaleDateString());
-    //     if (dateIndex !== -1) {
-    //       prices1[dateIndex] += dividend.cash_amount;
-    //     }
-    //   });
-  
-    //   dividends2.forEach((dividend: any) => {
-    //     const dateIndex = dates2.indexOf(new Date(dividend.pay_date).toLocaleDateString());
-    //     if (dateIndex !== -1) {
-    //       prices2[dateIndex] += dividend.cash_amount;
-    //     }
-    //   });
-    // }
-  
-    // Normalize prices to start from 100%
-    const normalizedPrices1 = prices1.map((price: number, index: number) => (price / prices1[0]) * 100);
-    const normalizedPrices2 = prices2.map((price: number, index: number) => (price / prices2[0]) * 100);
-  
-    // Calculate ROI including dividends if checkbox is checked
-    let totalDividends1 = 0;
-    let totalDividends2 = 0;
+    // Adjust prices using dividend multipliers
     if (this.includeDividends) {
       dividends1.forEach((dividend: any) => {
-        totalDividends1 += (dividend.cash_amount / prices1[0]) * 100;
+        const exDate = new Date(dividend.ex_dividend_date).toLocaleDateString();
+        const dateIndex = dates1.findIndex((date: string) => new Date(date).toLocaleDateString() === exDate);
+        if (dateIndex !== -1 && dateIndex > 0) {
+          const previousPrice = prices1[dateIndex - 1];
+          const multiplier = 1 - (dividend.cash_amount / previousPrice);
+          for (let i = 0; i <= dateIndex; i++) {
+            prices1[i] *= multiplier;
+          }
+        }
       });
   
       dividends2.forEach((dividend: any) => {
-        totalDividends2 += (dividend.cash_amount / prices2[0]) * 100;
+        const exDate = new Date(dividend.ex_dividend_date).toLocaleDateString();
+        const dateIndex = dates2.findIndex((date: string) => new Date(date).toLocaleDateString() === exDate);
+        if (dateIndex !== -1 && dateIndex > 0) {
+          const previousPrice = prices2[dateIndex - 1];
+          const multiplier = 1 - (dividend.cash_amount / previousPrice);
+          for (let i = 0; i <= dateIndex; i++) {
+            prices2[i] *= multiplier;
+          }
+        }
       });
     }
   
-    const finalPrice1 = normalizedPrices1[normalizedPrices1.length - 1] + totalDividends1;
-    const finalPrice2 = normalizedPrices2[normalizedPrices2.length - 1] + totalDividends2;
+    // Normalize prices to start from 100%
+    const normalizedPrices1 = prices1.map((price: number) => (price / prices1[0]) * 100);
+    const normalizedPrices2 = prices2.map((price: number) => (price / prices2[0]) * 100);
+  
+    const finalPrice1 = normalizedPrices1[normalizedPrices1.length - 1]; 
+    const finalPrice2 = normalizedPrices2[normalizedPrices2.length - 1];
   
     this.roiTicker1 = finalPrice1 - 100;
     this.roiTicker2 = finalPrice2 - 100;
@@ -242,6 +237,7 @@ export class SearchPairsComponent implements AfterViewInit {
       console.error('Chart reference is not available.');
     }
   }
+  
   
   
 }
